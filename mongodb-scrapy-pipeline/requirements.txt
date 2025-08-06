@@ -1,0 +1,6 @@
+scrapy
+pymongo
+python-dotenv
+
+#how to install- 
+# pip install -r requirements.txt
