@@ -1,0 +1,45 @@
+Scraping Logic Explanation
+1. Libraries Used
+Selenium: For browser automation, handling dynamic elements, and navigating through pagination.
+Pandas: For storing the extracted data and exporting it into a CSV file.
+Time: To add controlled delays for page loading and avoid race conditions.
+
+2. Approach
+
+Initialization:
+Launch Chrome using Selenium with proper options.
+Navigate to the Earth911 search results for "Electronics" in ZIP code 10001 within a 100-mile radius.
+
+Data Extraction:
+For each facility, the script extracts:
+Business Name from the <h2> tag.
+Distance/Type from the .subtitle-distance spans (both distance and location type).
+Street Address by combining address1, address2, and address3 into a single string.
+Materials Accepted from the materials list. If a “More Materials” link exists, it opens in a new tab, scrapes additional items, and merges them without duplicates.
+
+Pagination Handling:
+The script detects and clicks the "Next" button until there are no more pages.
+JavaScript click (execute_script) is used for better reliability.
+
+Data Cleaning:
+Removes duplicates in the materials list.
+Filters out placeholder text.
+Joins multi-line addresses and material names into single strings.
+
+Error Handling:
+try/except blocks are used to handle missing elements like addresses or materials gracefully.
+If any field is missing, a fallback value like "Not listed" is added instead of breaking the script.
+
+Output:
+The data is stored in a Pandas DataFrame.
+Exported to earth911_scraper_output.csv in UTF-8 encoding.
+
+3. Why This Approach
+Selenium was chosen because the Earth911 site dynamically loads content, which makes BeautifulSoup and Scrapy less effective and invalid.
+
+Tab handling is required for the “More Materials” link. Basically if a facility has a "more" tag it fetches the link, and extracts all the materials and gets back to the main page after closing the other page.
+
+The script ensures the scraper is reliable and avoids crashes from unexpected missing data.
+
+Note: Earth911 no longer displays last_update_date; the script instead uses the available distance/type field as a replacement.
+
